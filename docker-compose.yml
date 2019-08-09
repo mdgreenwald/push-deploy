@@ -1,0 +1,19 @@
+version: "3.1"
+services:
+  app:
+    env_file:
+     - .env
+    container_name: push-deploy
+    image: push-deploy:latest
+    build:
+      dockerfile: Dockerfile
+      context: .
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+    restart: always
+    volumes:
+      - "./:/opt/app"
+    environment:
+      PD_NAMESPACE: ${PD_NAMESPACE}
+      PD_DEPLOYMENT: ${PD_DEPLOYMENT}

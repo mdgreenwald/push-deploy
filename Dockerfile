@@ -10,4 +10,3 @@ COPY . .
 
 EXPOSE 5000
 
-CMD [ "python", "./push-deploy.py" ]

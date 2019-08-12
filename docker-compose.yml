@@ -12,8 +12,8 @@ services:
     stdin_open: true
     tty: true
     restart: always
+    ports:
+      - "5000:5000"
     volumes:
-      - "./:/opt/app"
-    environment:
-      PD_NAMESPACE: ${PD_NAMESPACE}
-      PD_DEPLOYMENT: ${PD_DEPLOYMENT}
+      - "./:/opt/push-deploy"
+

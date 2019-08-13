@@ -51,9 +51,22 @@ spec:
       serviceAccountName: push-deploy
       containers:
       - image: push-deploy:latest
-        imagePullPolicy: Always
-        command: ["python"]
-        args: ["push-deploy.py"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          tcpSocket:
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        command: ["gunicorn"]
+        args: ["-w", "4", "-b", "0.0.0.0", "wsgi:app"]
         name: push-deploy
         resources:
           requests:
@@ -71,5 +84,20 @@ spec:
         - name: k8s-reg-key
       securityContext: {}
       terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: push-deploy
+  labels:
+    app: push-deploy
+spec:
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+  selector:
+    app: push-deploy
 
 ---

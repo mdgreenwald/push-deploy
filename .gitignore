@@ -105,3 +105,7 @@ venv.bak/
 
 # macos
 .DS_Store
+
+# secrets
+*secrets*
+*credentials*

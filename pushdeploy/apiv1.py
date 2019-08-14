@@ -1,5 +1,6 @@
 import functools
-
+import json
+from kubernetes import client, config
 from datetime import timedelta
 from flask import Blueprint
 from flask import current_app
@@ -18,6 +19,33 @@ from flask_jwt_extended import (
     )
 
 bp = Blueprint("apiv1", __name__, url_prefix="/api/v1")
+
+@bp.before_app_request
+def init_api():
+    """Creates instances of the incluster config and client API
+    and stores them in global"""
+    g.configuration = config.load_incluster_config()
+    g.api_instance = client.AppsV1Api(client.ApiClient(g.configuration))
+    # g.api_instance = kubernetes.client.AppsV1Api(kubernetes.client.ApiClient(g.configuration))
+
+def read_deployment():
+    api_response = g.api_instance.list_namespaced_deployment(
+        namespace="default",
+        field_selector="metadata.name=http-svc"
+    )
+    if len(api_response.items) == 1:
+        return api_response.items[0]
+    else:
+        return "Deployment selectors not unique enough."
+
+def update_deployment(deployment):
+    deployment.spec.template.spec.containers[0].image = "gcr.io/google_containers/echoserver:1.10"
+    api_response = g.api_instance.patch_namespaced_deployment(
+        name="http-svc",
+        namespace="default",
+        body=deployment,
+        field_manager="push-deploy")
+    print("Deployment updated. status='%s'" % str(api_response.status))
 
 @bp.route('/auth', methods=['POST'])
 def login():
@@ -46,5 +74,5 @@ def index():
 @bp.route('/deploy', methods=['GET'])
 @jwt_required
 def deploy():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+    deploy = update_deployment(deployment=read_deployment())
+    return jsonify(msg=deploy), 200

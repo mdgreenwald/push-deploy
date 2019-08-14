@@ -57,13 +57,13 @@ spec:
         readinessProbe:
           tcpSocket:
             port: 8000
-          initialDelaySeconds: 10
+          initialDelaySeconds: 6
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /health
             port: 8000
-          initialDelaySeconds: 10
+          initialDelaySeconds: 14
           periodSeconds: 10
         command: ["gunicorn"]
         args: ["-w", "4", "--access-logfile", "-", "--error-logfile", "-", "-b", "0.0.0.0", "wsgi:app"]

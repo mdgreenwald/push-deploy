@@ -1,3 +1,4 @@
+from version import __version__
 import os
 from kubernetes import client, config
 from flask import Flask, jsonify
@@ -39,7 +40,7 @@ def create_app(test_config=None):
     def health():
         return jsonify(
         status='healthy',
-        releaseId='0.0.0',
+        releaseId=__version__,
         ), 200
 
     @app.route('/', methods=['GET'])

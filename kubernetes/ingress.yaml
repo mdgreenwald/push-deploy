@@ -1,0 +1,16 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: push-deploy
+spec:
+  rules:
+    - host: pushdeploy.internal
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: push-deploy
+            servicePort: 80
+
+---

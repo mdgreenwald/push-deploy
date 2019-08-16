@@ -1,4 +1,4 @@
-FROM python:3-slim-stretch
+FROM python:3-alpine
 
 WORKDIR /opt/push-deploy
 
@@ -9,5 +9,3 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 EXPOSE 5000
-
-CMD [ "python", "./push-deploy.py" ]

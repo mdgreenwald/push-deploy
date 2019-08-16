@@ -79,7 +79,7 @@ def login():
 @bp.route('/deploy', methods=['GET'])
 @jwt_required
 def deploy():
-    commit_sha = request.args['commit_sha']
+    image_tag = request.args['image_tag']
     image_name = request.args['image_name']
-    deploy = update_deployment(deployment=read_deployment(), image_name=image_name, image_tag=commit_sha)
+    deploy = update_deployment(deployment=read_deployment(), image_name=image_name, image_tag=image_tag)
     return jsonify(msg=deploy), 201

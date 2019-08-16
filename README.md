@@ -1,8 +1,8 @@
 # Push-Deploy #
 
-Push-Deploy is a Python application which helps to securely and simply enable communication between external tools (GitHub Actions, Circle CI, etc…) and Kubernetes without exposing cluster credentials.
+Push-Deploy is a Python application which helps to securely and simply enable communication between external tools (GitHub Actions, Circle CI, etc…) and Kubernetes without exposing cluster credentials. Instead it exposes an API which accepts parameters.
 
-In particular for projects which may not have `semver` inplace where other tools like [keel.sh](https://keel.sh/) and [weave/flux](https://github.com/fluxcd/flux) would make more sense.
+Push-deploy is focused on projects which may not have `semver` in place where other tools like [keel.sh](https://keel.sh/) and [weave/flux](https://github.com/fluxcd/flux) would make more sense.
 
 --
 

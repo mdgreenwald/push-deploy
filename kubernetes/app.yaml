@@ -15,9 +15,6 @@ rules:
 - apiGroups: ["", "apps"]
   resources: ["deployments"]
   verbs: ["list", "patch"]
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["list"]
 
 ---
 kind: RoleBinding
@@ -68,18 +65,18 @@ spec:
         command: ["gunicorn"]
         args: ["-w", "4", "--access-logfile", "-", "--error-logfile", "-", "-b", "0.0.0.0", "wsgi:app"]
         name: push-deploy
+        envFrom:
+        - configMapRef:
+            name: push-deploy-config
+        - secretRef:
+            name: push-deploy-secrets
         resources:
           requests:
-            memory: "96Mi"
+            memory: "192Mi"
             cpu: "50m"
           limits:
-            memory: "256Mi" 
+            memory: "320Mi"
             cpu: "250m"
-        env:
-          - name: PD_NAMESPACE
-            value: default
-          - name: PD_DEPLOYMENT
-            value: "nginx"
       imagePullSecrets:
         - name: k8s-reg-key
       securityContext: {}

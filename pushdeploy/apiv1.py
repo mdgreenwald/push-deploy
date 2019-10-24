@@ -26,13 +26,11 @@ def init_api():
     and stores them in global"""
     g.configuration = config.load_incluster_config()
     g.api_instance = client.AppsV1Api(client.ApiClient(g.configuration))
-    g.PD_NAMESPACE = current_app.config['PD_NAMESPACE']
-    g.PD_DEPLOYMENT = current_app.config['PD_DEPLOYMENT']
     g.PD_REGISTRY = current_app.config['PD_REGISTRY']
 
-def read_deployment():
-    namespace = "%s" % str(g.PD_NAMESPACE)
-    field = "metadata.name=%s" % str(g.PD_DEPLOYMENT)
+def read_deployment(deployment, namespace):
+    namespace = "%s" % str(namespace)
+    field = "metadata.name=%s" % str(deployment)
     api_response = g.api_instance.list_namespaced_deployment(
         namespace=namespace,
         field_selector=field
@@ -42,13 +40,13 @@ def read_deployment():
     else:
         return "Deployment selector not unique enough."
 
-def update_deployment(deployment, image_name, image_tag):
+def update_deployment(deployment_object, image_name, image_tag, deployment, namespace):
     image = "%s/%s:%s" % (g.PD_REGISTRY, image_name, image_tag)
-    deployment.spec.template.spec.containers[0].image = image
+    deployment_object.spec.template.spec.containers[0].image = image
     api_response = g.api_instance.patch_namespaced_deployment(
-        name=g.PD_DEPLOYMENT,
-        namespace=g.PD_NAMESPACE,
-        body=deployment,
+        name=deployment,
+        namespace=namespace,
+        body=deployment_object,
         field_manager="push-deploy")
     print("Deployment updated. status='%s'" % str(api_response.status))
 
@@ -81,5 +79,7 @@ def login():
 def deploy():
     image_tag = request.args['image_tag']
     image_name = request.args['image_name']
-    deploy = update_deployment(deployment=read_deployment(), image_name=image_name, image_tag=image_tag)
+    deployment = request.args['deployment']
+    namespace = request.args['namespace']
+    deploy = update_deployment(deployment_object=read_deployment(deployment=deployment, namespace=namespace), image_name=image_name, image_tag=image_tag, deployment=deployment, namespace=namespace)
     return jsonify(msg=deploy), 201

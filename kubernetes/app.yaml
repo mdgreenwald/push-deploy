@@ -3,38 +3,65 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: push-deploy
-  namespace: default
+  namespace: push-deploy
 
 ---
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
 metadata:
-  name: deployments-list
-  namespace: default
+  name: deployments-list-patch-clusterrole
+  namespace: push-deploy
 rules:
 - apiGroups: ["", "apps"]
   resources: ["deployments"]
   verbs: ["list", "patch"]
 
 ---
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
 metadata:
-  name: deployments-list
-subjects:
-- kind: ServiceAccount
-  name: push-deploy
-  namespace: default
+  name: deployments-list-patch-role
+  namespace: push-deploy
+rules:
+- apiGroups: ["", "apps"]
+  resources: ["deployments"]
+  verbs: ["list", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: deployments-list-patch-role-binding
+  namespace: push-deploy
 roleRef:
-  kind: Role
-  name: deployments-list
   apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: deployments-list-patch-role
+subjects:
+  - kind: ServiceAccount
+    name: push-deploy
+    namespace: push-deploy
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: deployments-list-patch-clusterrole-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: deployments-list-patch-clusterrole
+subjects:
+  - kind: ServiceAccount
+    name: push-deploy
+    namespace: push-deploy
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: push-deploy
+  namespace: push-deploy
 spec:
   replicas: 1
   selector:
@@ -77,8 +104,8 @@ spec:
           limits:
             memory: "320Mi"
             cpu: "250m"
-      imagePullSecrets:
-        - name: k8s-reg-key
+      # imagePullSecrets:
+      #   - name: image-pull-secret
       securityContext: {}
       terminationGracePeriodSeconds: 30
 
@@ -87,6 +114,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: push-deploy
+  namespace: push-deploy
   labels:
     app: push-deploy
 spec:

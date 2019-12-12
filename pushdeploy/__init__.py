@@ -10,8 +10,8 @@ from pushdeploy import apiv1
 
 def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_object('config')
+    app = Flask(__name__)
+    app.config.from_pyfile('config.py')
 
     app.config['JWT_SECRET_KEY'] = app.config['SECRET_KEY']
     jwt = JWTManager(app)

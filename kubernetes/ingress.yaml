@@ -5,7 +5,7 @@ metadata:
   name: push-deploy
 spec:
   rules:
-    - host: pushdeploy.internal
+    - host: push-deploy.internal
       http:
         paths:
         - path: /

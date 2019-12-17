@@ -21,6 +21,8 @@ coverage.xml
 Tiltfile
 docker-compose.yml
 kubernetes
+Makefile
+README.md
 
 # Environments
 .env

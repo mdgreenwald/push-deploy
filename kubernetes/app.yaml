@@ -1,8 +1,15 @@
 ---
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: push-deploy
+
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: push-deploy-config
+  namespace: push-deploy
 data:
   FLASK_ENV: development
   PD_REGISTRY: docker.io/
@@ -17,6 +24,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: push-deploy-secrets
+  namespace: push-deploy
 type: Opaque
 data:
   PD_SECRET_KEY: dXNDdUtuclFiU0ZjbkE1eEJjalBKZHFTRGFTQmlrVkFwUmJFT2xtZlhzbDRPQXdSVXZhalVqc2NXNEVjdzZ2Yw==

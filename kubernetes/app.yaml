@@ -12,7 +12,7 @@ metadata:
   namespace: push-deploy
 data:
   FLASK_ENV: development
-  PD_REGISTRY: docker.io/
+  PD_REGISTRY: docker.io
   PD_USER: deploy_user
 
   config.py: |

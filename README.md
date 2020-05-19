@@ -21,16 +21,33 @@ This is pre-release software and is very limited. It will have bugs and lacks ma
 
 ```bash
 TOKEN=$(
-    curl -H "Content-Type: application/json" -X POST \
-    -d '{"username":"service_account_name","password":"as8djareallylongstring9asdj8a8sdj"}' \
-    http://pushdeploy.domain.com/api/v1/auth
+    curl --header "Content-Type: application/json" \
+    --request POST \
+    -d '{"username":"${USERNAME}","password":"${PASSWORD}"}' \
+    https://pushdeploy.domain.com/api/v1/auth
     )
 ```
 
 ```bash
-curl -H "Authorization: Bearer $TOKEN" \
-http://pushdeploy.domain.com/api/v1/deploy?image_name=my_image&image_tag=v1.0.3
+curl --header "Authorization: Bearer ${TOKEN}" \
+--request POST \
+"https://pushdeploy.domain.com/api/v1/deployment?name=${NAME}&namespace=${NAMESPACE}&image_name=${IMAGE_NAME}&image_tag=${IMAGE_TAG}"
 ```
+
+### v1 Endpoints
+
+- /api/v1/cronjob -> v1beta1/cronjob
+- /api/v1/daemonset -> apps/v1/daemonset
+- /api/v1/deployment -> apps/v1/deployment
+
+- /api/v1/deploy -> apps/v1/deployments (**Deprecated**)
+
+### v1 Parameters
+
+- name=name of object
+- namespace=namespace of object
+- image_name=image name
+- image_tag=image tag
 
 ## Contributing
 

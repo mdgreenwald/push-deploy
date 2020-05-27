@@ -1,0 +1,89 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-test
+  labels:
+    environment: test
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: "Forbid"
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 6
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox:1.24.0
+            args:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+            resources:
+              limits:
+                cpu: 20m
+                memory: 32Mi
+              requests:
+                cpu: 10m
+                memory: 16Mi
+          restartPolicy: OnFailure
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-test
+  labels:
+    environment: test
+spec:
+  selector:
+    matchLabels:
+      name: daemonset-test
+  template:
+    metadata:
+      labels:
+        name: daemonset-test
+    spec:
+      containers:
+      - name: busybox
+        image: busybox:1.24.0
+        command: ['sh', '-c', "until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+        resources:
+          limits:
+            cpu: 20m
+            memory: 32Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-test
+  labels:
+    environment: test
+spec:
+  selector:
+    matchLabels:
+      app: deployment-test
+  template:
+    metadata:
+      labels:
+        app: deployment-test
+    spec:
+      containers:
+      - name: busybox
+        image: busybox:1.24.0
+        command: ['sh', '-c', "until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+        resources:
+          limits:
+            cpu: 20m
+            memory: 32Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi

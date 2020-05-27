@@ -2,10 +2,7 @@ from version import __version__
 import os
 from kubernetes import client, config
 from flask import Flask, jsonify
-from flask_jwt_extended import (
-    JWTManager, jwt_required, jwt_optional, create_access_token,
-    get_jwt_identity
-    )
+from flask_jwt_extended import JWTManager, jwt_required, jwt_optional, create_access_token, get_jwt_identity
 from pushdeploy import apiv1
 
 def create_app(test_config=None):

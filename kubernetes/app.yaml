@@ -44,8 +44,11 @@ metadata:
   name: deployments-list-patch-clusterrole
   namespace: push-deploy
 rules:
-- apiGroups: ["", "apps"]
-  resources: ["deployments"]
+- apiGroups: ["extensions", "apps"]
+  resources: ["deployments", "daemonsets"]
+  verbs: ["list", "patch"]
+- apiGroups: ["batch"]
+  resources: ["cronjobs"]
   verbs: ["list", "patch"]
 
 ---
@@ -55,8 +58,11 @@ metadata:
   name: deployments-list-patch-role
   namespace: push-deploy
 rules:
-- apiGroups: ["", "apps"]
-  resources: ["deployments"]
+- apiGroups: ["extensions", "apps"]
+  resources: ["deployments", "daemonsets"]
+  verbs: ["list", "patch"]
+- apiGroups: ["batch"]
+  resources: ["cronjobs"]
   verbs: ["list", "patch"]
 
 ---

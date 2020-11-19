@@ -128,7 +128,7 @@ spec:
           initialDelaySeconds: 14
           periodSeconds: 10
         command: ["gunicorn"]
-        args: ["-w", "4", "--access-logfile", "-", "--error-logfile", "-", "-b", "0.0.0.0", "wsgi:app"]
+        args: ["--workers", "4", "--access-logfile", "-", "--error-logfile", "-", "--bind", "0.0.0.0", "wsgi:app"]
         name: push-deploy
         envFrom:
         - configMapRef:

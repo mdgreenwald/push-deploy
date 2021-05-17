@@ -1,5 +1,5 @@
 kubernetes==12.0.1
-Flask==1.1.2
+Flask==2.0.0
 Flask-API==2.0
 flask-jwt-extended==3.25.0
 gunicorn==20.0.4
